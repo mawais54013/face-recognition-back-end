@@ -1,68 +1,101 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-<!-- Everything works and its awesome -->
-## Available Scripts
+# Face - Recognition
+*** Back end portion ***
 
-In the project directory, you can run:
+Link to front end github: [Front-End](https://github.com/mawais54013/Face-Recognition)
 
-### `npm start`
+The application is a image face recognition app using Postgres, React, Clarifai, and Tachyons. Users can login or register to the app and paste a link to a image in the input area that will detect every face in the image with a box while updating the user's count with every image. 
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+![index](images/Screen1.png)
+Sign-in and register page above
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+# Getting Started 
 
-### `npm test`
+Site Link: [Face Recognition](https://face-recog01.herokuapp.com/)
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+After logging in or registering, the user will be taken to the main page where they can paste a link to a pic and after clicking the Detect button, the Clarifai API is used to detect a face in the picture. A demo in gif form in shown below with a link to a pic of Brad Pitt: 
 
-### `npm run build`
+![main](images/gif1.gif)
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+Your can access the site from any interest browser including [Google Chrome](https://www.google.com/chrome/), [Firefox](https://www.mozilla.org/en-US/firefox/new/), or [Safari](https://www.apple.com/safari/). 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Deployment 
 
-### `npm run eject`
+This site is deployed through [heroku](https://codechat-v1.herokuapp.com/),and uses Postgres for storing login information about the users and the number of entries they make. 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+# Built With 
+* React.js 
+* Javascript/JQuery
+* Tachyons
+* Postgres
+* Clarifai
+* Heroku
+* NPM 
+    - Particle.js
+    - Express.js
+    - Body-parser
+    - bcrypt-nodejs
+    - knex
+    - cors
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+APIs and Libraries 
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+* [Tachyons](http://tachyons.io/)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+    Create fast loading, highly readable, and 100% responsive interfaces with as little css as possible. CSS toolkit. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+* [Clarifai](https://clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection#documentation)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    Face detection API 
 
-### Code Splitting
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+# Wireframe and Layout
 
-### Analyzing the Bundle Size
+Built with react as the front end and the back end is Node.js with Postgres for storing user information. The main design for this project is have show the user the number of faces in a image with a light blue box around the faces. With each image a user inputs, their count will be updated and stored in the database until their next image input. 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+# Brief Features Descriptions
 
-### Making a Progressive Web App
+![clarifai](images/clarifai.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+After send a API request with a image, the response sent back in form of JSON shows the number of faces in the image along with coordinates that put together will display a box around each face that is in the image while incrementing the user's count. 
 
-### Advanced Configuration
+```
+calculateFaceLocation = (data) => {
+    const image = document.getElementById('inputimage');
+    const width = Number(image.width);
+    const height = Number(image.height);
+    return data.outputs[0].data.regions.map(face => {
+        const clarifaiFace = face.region_info.bounding_box;
+        return {
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height)
+        }
+    });
+}
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+The function above get the response and uses map to make each face image have a top/bottom row and right/left column that will be used in the next function that will display the light blue boxes around each images. 
 
-### Deployment
+```
+<img id='inputimage' alt='' src={imageUrl} width='500px' heigh='auto'/>
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+    {boxes.map(box => {
+        console.log(box.topRow);
+        return <div key={box.topRow} className='bounding-box' style={{top: box.topRow, right: box.rightCol, bottom: box.bottomRow, left: box.leftCol}}></div>
+        })
+    }
+```
 
-### `npm run build` fails to minify
+This displays the images and the map function is used to take the box coordinates and create a bounding box and place it in the image where the face is located. 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+# Final Thoughts
+Hope everyone enjoys this application, I had a really great time creating the project and I hope everyone will enjoy it too.
+
+Thank you
+
+# Author
+* **Muhammad** - https://github.com/mawais54013
