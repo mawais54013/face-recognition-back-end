@@ -1,3 +1,4 @@
+const tracer = require('dd-trace').init()
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
@@ -8,6 +9,10 @@ const register = require('./controllers/register');
 const signin = require('./controllers/sigin');
 const profile = require('./controllers/profile');
 const image = require('./controllers/image');
+
+tracer.init({
+    analytics: true
+})
 
 const db = knex({
     client: 'pg',
